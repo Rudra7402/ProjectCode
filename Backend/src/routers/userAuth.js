@@ -10,7 +10,7 @@ authRouter.post('/register', register);
 authRouter.post('/login', login);
 authRouter.post('/logout',userMiddleware ,logout);
 authRouter.post('/admin/register',adminMiddleware, adminRegister);
-authRouther.delete('/profile',userMiddleware,deleteProfile);
+authRouter.delete('/profile',userMiddleware,deleteProfile);
 authRouter.get('/check',userMiddleware, (req,res)=>{
 
     const reply={

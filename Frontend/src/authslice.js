@@ -8,7 +8,7 @@ export const registerUser = createAsyncThunk(
     const response =  await axiosClient.post('/user/register', userData);
     return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk(
       const response = await axiosClient.post('/user/login', credentials);
       return response.data.user;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
@@ -29,14 +29,18 @@ export const loginUser = createAsyncThunk(
 export const checkAuth = createAsyncThunk(
   'auth/check',
   async (_, { rejectWithValue }) => {
+    // // Skip API call if no token in cookies
+    // if (!document.cookie.includes('token')) {
+    //   return rejectWithValue(null);
+    // }
     try {
       const { data } = await axiosClient.get('/user/check');
       return data.user;
     } catch (error) {
       if (error.response?.status === 401) {
-        return rejectWithValue(null); // Special case for no session
+        return null; // Special case for no session
       }
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });;
     }
   }
 );
@@ -48,7 +52,7 @@ export const logoutUser = createAsyncThunk(
       await axiosClient.post('/user/logout');
       return null;
     } catch (error) {
-      return rejectWithValue(error);
+      return rejectWithValue(error.response?.data || { message: error.message });
     }
   }
 );
